@@ -28,7 +28,15 @@ class Solution:
             j = i
             while s[j] != '#':
                 j += 1
+
+            # The reason this is not s[i] is because the length could be more than one digit
             length = int(s[i:j])
             result.append(s[j + 1 : j + 1 + length])
             i = j + 1 + length
         return result
+
+
+solution = Solution()
+strs = ["neet", "code", "loves", "you", "", "thisIsAVeryLongStringToCheckForInVariant"]
+s = solution.encode(strs)
+assert solution.decode(s) == strs
