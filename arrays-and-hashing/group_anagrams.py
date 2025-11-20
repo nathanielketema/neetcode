@@ -20,12 +20,21 @@ from collections import defaultdict
 
 class Solution:
     def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
-        result: defaultdict[tuple[int, ...], list[str]] = defaultdict(list) # char_count:list_of_anagrams
-        for string in strs:             # n (number of strs)
-            count = [0] * 26
-            for char in string:          # n * m(number of chars)
-                count[ord(char) - ord('a')] += 1
-            result[tuple(count)].append(string)
-        return list(result.values())
+        if len(strs) == 0:
+            return []
 
-# Solution: Time - O(m * n) and Space - O(n)
+        count_map: defaultdict[tuple[int, ...], list[str]] = defaultdict(list)
+        for s in strs:
+            count: list[int] = [0] * 26
+            for c in s:
+                count[ord(c) - ord("a")] += 1
+            count_map[tuple(count)].append(s)
+
+        return list(count_map.values())
+
+
+solution = Solution()
+strs = ["act", "pots", "tops", "cat", "stop", "hat"]
+assert len(solution.groupAnagrams(strs)) == len(
+    [["hat"], ["act", "cat"], ["stop", "pots", "tops"]]
+)
