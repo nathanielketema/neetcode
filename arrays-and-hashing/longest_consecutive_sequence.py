@@ -27,7 +27,7 @@ Constraints:
 class Solution:
     def longestConsecutive(self, nums: list[int]) -> int:
         longest = 0
-        seen: set[int] = set()
+        seen: set[int] = set(nums)
 
         for num in nums:
             # check if its a start of a sequence
