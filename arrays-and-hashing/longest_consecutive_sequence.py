@@ -37,3 +37,7 @@ class Solution:
                     length += 1
                 longest = max(length, longest)
         return longest
+
+solution = Solution()
+nums = [2,20,4,10,3,4,5]
+assert solution.longestConsecutive(nums) == 4
