@@ -49,33 +49,54 @@ Constraints:
 
 class Solution:
     def isValidSudoku(self, board: list[list[str]]) -> bool:
-        # Valid row
-        for i in range(len(board)):
-            seen: set[str] = set()
-            for j in range(len(board[i])):
-                if board[i][j] != ".":
-                    if board[i][j] in seen:
-                        return False
-                    seen.add(board[i][j])
+        row_count = col_count = 9
+        box_count = 3
+        dot = "."
 
-        # Valid col
-        for j in range(len(board[0])):
+        # row check O(n^2)
+        for r in range(row_count):
             seen = set()
-            for i in range(len(board)):
-                if board[i][j] != ".":
-                    if board[i][j] in seen:
+            for c in range(col_count):
+                item = board[r][c]
+                if item != dot:
+                    if item in seen:
                         return False
-                    seen.add(board[i][j])
+                    seen.add(item)
 
-        # Valid square
-        for i in range(0, len(board), 3):
-            for j in range(0, len(board[i]), 3):
+        # col check O(n^2)
+        for r in range(row_count):
+            seen = set()
+            for c in range(col_count):
+                item = board[c][r]
+                if item != dot:
+                    if item in seen:
+                        return False
+                    seen.add(item)
+
+        # box check O(n^2)
+        for r in range(0, row_count, box_count):
+            for c in range(0, col_count, box_count):
                 seen = set()
-                for row in range(i, i + 3):
-                    for col in range(j, j + 3):
-                        if board[row][col] != ".":
-                            if board[row][col] in seen:
+                for br in range(r, box_count):
+                    for bc in range(c, box_count):
+                        item = board[br][bc]
+                        if item != dot:
+                            if item in seen:
                                 return False
-                            seen.add(board[row][col])
-
+                            seen.add(item)
         return True
+
+
+solution = Solution()
+board = [
+    ["1", "2", ".", ".", "3", ".", ".", ".", "."],
+    ["4", ".", ".", "5", ".", ".", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", ".", "3"],
+    ["5", ".", ".", ".", "6", ".", ".", ".", "4"],
+    [".", ".", ".", "8", ".", "3", ".", ".", "5"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", ".", ".", ".", ".", ".", "2", ".", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "8"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"],
+]
+assert solution.isValidSudoku(board)

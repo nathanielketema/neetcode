@@ -1,5 +1,5 @@
 """
-Design an algorithm to encode a list of strings to a single string. 
+Design an algorithm to encode a list of strings to a single string.
 The encoded string is then decoded back to the original list of strings.
 
 Please implement encode and decode
@@ -20,19 +20,18 @@ class Solution:
         for s in strs:
             result += str(len(s)) + "#" + s
         return result
- 
+
     def decode(self, s: str) -> list[str]:
-        result: list[str] = []
+        result = []
         i = 0
         while i < len(s):
             j = i
-            while s[j] != '#':
+            while s[j] != "#":
                 j += 1
-
-            # The reason this is not s[i] is because the length could be more than one digit
-            length = int(s[i:j])
-            result.append(s[j + 1 : j + 1 + length])
-            i = j + 1 + length
+            size = int(s[i:j])
+            j += 1
+            result.append(s[j : j + size])
+            i = j + size
         return result
 
 

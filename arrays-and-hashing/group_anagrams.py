@@ -20,17 +20,19 @@ from collections import defaultdict
 
 class Solution:
     def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
-        if len(strs) == 0:
-            return []
+        """
+                Table
+        freq_count : list[str]
+        [0..26]    : ["", ""]
+        """
 
-        count_map: defaultdict[tuple[int, ...], list[str]] = defaultdict(list)
+        freq_table = defaultdict(list[str])
         for s in strs:
-            count: list[int] = [0] * 26
+            freq_count = [0] * 26
             for c in s:
-                count[ord(c) - ord("a")] += 1
-            count_map[tuple(count)].append(s)
-
-        return list(count_map.values())
+                freq_count[ord(c) - ord("a")] += 1
+            freq_table[tuple(freq_count)].append(s) # list's can't be hashed in python
+        return list(freq_table.values())
 
 
 solution = Solution()
@@ -38,3 +40,14 @@ strs = ["act", "pots", "tops", "cat", "stop", "hat"]
 assert len(solution.groupAnagrams(strs)) == len(
     [["hat"], ["act", "cat"], ["stop", "pots", "tops"]]
 )
+
+strs = []
+assert len(solution.groupAnagrams(strs)) == 0
+
+strs = ["a", "b", "c"]
+assert len(solution.groupAnagrams(strs)) == 3
+
+strs = ["a", "a", "a"]
+assert len(solution.groupAnagrams(strs)) == 1
+
+print("It works")

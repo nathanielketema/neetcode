@@ -1,5 +1,5 @@
 """
-Given an integer array nums, return an array output where output[i] is the product of 
+Given an integer array nums, return an array output where output[i] is the product of
 all the elements of nums except nums[i].
 
 Each product is guaranteed to fit in a 32-bit integer.
@@ -18,48 +18,24 @@ Output: [0,-6,0,0,0]
 
 class Solution:
     def productExceptSelf(self, nums: list[int]) -> list[int]:
-        product, zeros = 1, 0
-        for num in nums:
-            if num == 0:
-                zeros += 1
-            else:
-                product *= num
+        result = [1 for i in range(len(nums))]
 
-        result: list[int] = [0] * len(nums)
-        if zeros > 1:
-            return result
-
+        prefix = 1
         for i in range(len(nums)):
-            if nums[i] == 0:
-                result[i] = product
-            elif zeros == 1:
-                result[i] = 0
-            else:
-                result[i] = int(product / nums[i])
-        return result
+            result[i] = prefix
+            prefix *= nums[i]
 
-solution = Solution()
-nums = [1,2,4,6]
-assert solution.productExceptSelf(nums) == [48,24,12,8]
-
-
-
-class Solution2:
-    def productExceptSelf(self, nums: list[int]) -> list[int]:
-        result: list[int] = [1] * len(nums)
-
-        left_product = 1
-        for i in range(len(nums)):
-            result[i] = left_product
-            left_product *= nums[i]
-
-        right_product = 1
+        postfix = 1
         for i in range(len(nums) - 1, -1, -1):
-            result[i] *= right_product
-            right_product *= nums[i]
+            result[i] *= postfix
+            postfix *= nums[i]
 
         return result
 
+
 solution = Solution()
-nums = [1,2,4,6]
-assert solution.productExceptSelf(nums) == [48,24,12,8]
+nums = [1, 2, 4, 6]
+assert solution.productExceptSelf(nums) == [48, 24, 12, 8]
+
+nums = [-1, 0, 1, 2, 3]
+assert solution.productExceptSelf(nums) == [0, -6, 0, 0, 0]

@@ -14,27 +14,43 @@ Example 2:
 Input: nums = [7,7], k = 1
 Output: [7]
 """
+
 from collections import defaultdict
 
 
 class Solution:
     def topKFrequent(self, nums: list[int], k: int) -> list[int]:
-        count: defaultdict[int, int] = defaultdict(int)
-        freq: list[list[int]] = [[] for _ in range(len(nums) + 1)] # n
+        num_count = defaultdict(int)
 
-        for num in nums:   # n
-            count[num] += 1
-        for num, cnt in count.items(): # n
-            freq[cnt].append(num)
+        # O(n)
+        for num in nums:
+            num_count[num] += 1
 
-        res: list[int] = []
-        for i in range(len(freq) - 1, 0, -1):
-            for num in freq[i]:
-                if len(res) == k:
-                    return res
-                res.append(num)
-        return res
+        # O(n)
+        bucket = [[] for _ in range(len(nums) + 1)]
+        for num, count in num_count.items():
+            bucket[count].append(num)
+
+        result = []
+        for i in range(k, len(bucket)):
+            for j in range(len(bucket[i])):
+                result.append(bucket[i][j])
+
+        return result
 
 
-# Solution: Time - O(n), Space - O(n)
-# Tip: when analyzing nested for loops, think of how many unique operations happen
+solution = Solution()
+nums, k = [1, 2, 2, 3, 3, 3, 4, 4], 2
+assert solution.topKFrequent(nums, k) == [2, 4, 3]
+
+nums, k = [7, 7], 1
+assert solution.topKFrequent(nums, k) == [7]
+
+nums, k = [1, 2, 3, 4], 1
+assert solution.topKFrequent(nums, k) == [1, 2, 3, 4]
+
+nums, k = [1, 1, 2, 3, 4], 2
+assert solution.topKFrequent(nums, k) == [1]
+
+nums, k = [1, 1, 2, 3, 4], 5
+assert solution.topKFrequent(nums, k) == []
