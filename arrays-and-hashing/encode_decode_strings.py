@@ -36,6 +36,7 @@ class Solution:
 
 
 solution = Solution()
-strs = ["neet", "code", "loves", "you", "", "thisIsAVeryLongStringToCheckForInVariant"]
-s = solution.encode(strs)
-assert solution.decode(s) == strs
+strings = ["neet", "code", "loves", "you", "", "thisIsAVeryLongStringToCheckForInVariant"]
+encoded = solution.encode(strings)
+decoded = solution.decode(encoded)
+assert decoded == strings

@@ -7,14 +7,6 @@ const testing = std.testing;
 const Io = std.Io;
 const Allocator = std.mem.Allocator;
 
-//   ```py
-//   seen = sets()
-//   for num in nums:
-//      if num in seens:
-//         return true
-//      seen.add(num)
-//   ```
-
 const Solution = struct {
     fn has_duplicate(gpa: Allocator, nums: []const i8) bool {
         var seen: std.AutoHashMap(i8, void) = .init(gpa);
@@ -29,15 +21,18 @@ const Solution = struct {
     }
 };
 
-fn check(nums: []const i8, expected: bool) !void {
-    const gpa = testing.allocator;
-    try testing.expectEqual(expected, Solution.has_duplicate(gpa, nums));
-}
-
 test "solution" {
-    try check(&.{2, 1, 2}, true);
-    try check(&.{2, 1, 0, -2}, false);
-    try check(&.{-2}, false);
-    try check(&.{-2, -2, -2}, true);
-    try check(&.{2, -2, -3, 4, 5, 2}, true);
+    const T = struct {
+        fn check(nums: []const i8, expected: bool) !void {
+            const gpa = testing.allocator;
+            try testing.expectEqual(expected, Solution.has_duplicate(gpa, nums));
+            std.debug.print("{any}: {any}\n", .{ nums, expected });
+        }
+    };
+
+    try T.check(&.{ 2, 1, 2 }, true);
+    try T.check(&.{ 2, 1, 0, -2 }, false);
+    try T.check(&.{-2}, false);
+    try T.check(&.{ -2, -2, -2 }, true);
+    try T.check(&.{ 2, -2, -3, 4, 5, 2 }, true);
 }
