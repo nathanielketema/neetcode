@@ -101,7 +101,12 @@ test "solution" {
             const duped_position = try arena.dupe(u32, position);
 
             const got = try Solution.car_fleet(arena, target, duped_position, speed);
-            //std.debug.print("target = {d}, position = {any}, speed: {any} -> {d}\n", .{ target, position, speed, got });
+            std.debug.print("target = {d}, position = {any}, speed: {any} -> {d}\n", .{
+                target,
+                position,
+                speed,
+                got,
+            });
             try testing.expectEqual(want, got);
         }
     };
