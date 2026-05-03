@@ -47,34 +47,78 @@ const Io = std.Io;
 const Allocator = std.mem.Allocator;
 
 const Solution = struct {
-    fn car_fleet(arena: Allocator, target: i32, position: []i32, speed: []i32) !usize {
+    fn car_fleet(arena: Allocator, target: u32, position: []u32, speed: []const u32) !usize {
         assert(position.len == speed.len);
         assert(target > 0 and target <= 1000);
         for (position, speed, 0..) |po, sp, i| {
-            assert(po >= 0 and po < target);
+            assert(po < target);
             assert(sp > 0 and sp <= 100);
             if (i < position.len - 1) assert(position[i] != position[i + 1]);
         }
+        const count = position.len;
+
+        const Car = struct {
+            position: u32,
+            speed: u32,
+        };
+
+        var cars: []Car = try arena.alloc(Car, count);
+        for (position, speed, 0..) |po, sp, i| {
+            cars[i] = Car{
+                .position = po,
+                .speed = sp,
+            };
+        }
+        std.mem.sort(Car, cars, {}, struct {
+            fn greater_than(_: void, lhs: Car, rhs: Car) bool {
+                return std.math.order(lhs.position, rhs.position) == .gt;
+            }
+        }.greater_than);
+
+        var stack: std.ArrayList(f64) = try .initCapacity(arena, position.len);
+        for (cars) |car| {
+            const time = @as(f64, @floatFromInt(target - car.position)) /
+                @as(f64, @floatFromInt(car.speed));
+
+            if (stack.getLastOrNull()) |item| {
+                if (time > item) try stack.append(arena, time);
+            } else {
+                try stack.append(arena, time);
+            }
+        }
+
+        return stack.items.len;
     }
 };
 
 test "solution" {
     const T = struct {
-        fn check(target: i32, position: []const i32, speed: []const i32, want: usize) !void {
+        fn check(target: u32, position: []const u32, speed: []const u32, want: usize) !void {
             var arena_instance: std.heap.ArenaAllocator = .init(testing.allocator);
             defer arena_instance.deinit();
             const arena = arena_instance.allocator();
 
-            const got = try Solution.car_fleet(arena, target, position, speed);
-            std.debug.print("target = {d}, position = {any}, speed: {any} -> {d}\n", .{
-                target,
-                position,
-                speed,
-                got,
-            });
+            const duped_position = try arena.dupe(u32, position);
+
+            const got = try Solution.car_fleet(arena, target, duped_position, speed);
+            //std.debug.print("target = {d}, position = {any}, speed: {any} -> {d}\n", .{ target, position, speed, got });
             try testing.expectEqual(want, got);
         }
     };
 
-    try T.check(10, &.{ 4, 1, 0, 7 }, .{ 2, 2, 1, 1 }, 3);
+    try T.check(10, &.{ 4, 1, 0, 7 }, &.{ 2, 2, 1, 1 }, 3);
+
+    {
+        var prng: std.Random.DefaultPrng = .init(67);
+        const random = prng.random();
+
+        var position: [950]u32 = undefined;
+        var speed: [950]u32 = undefined;
+        for (0..position.len) |i| {
+            position[i] = @intCast(i);
+            speed[i] = @mod(random.int(u32), 98) + 1;
+        }
+
+        try T.check(999, &position, &speed, 19);
+    }
 }
