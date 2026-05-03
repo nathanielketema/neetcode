@@ -55,14 +55,13 @@ const Solution = struct {
             assert(sp > 0 and sp <= 100);
             if (i < position.len - 1) assert(position[i] != position[i + 1]);
         }
-        const count = position.len;
 
         const Car = struct {
             position: u32,
             speed: u32,
         };
 
-        var cars: []Car = try arena.alloc(Car, count);
+        var cars: []Car = try arena.alloc(Car, position.len);
         for (position, speed, 0..) |po, sp, i| {
             cars[i] = Car{
                 .position = po,
