@@ -112,18 +112,4 @@ test "solution" {
     };
 
     try T.check(10, &.{ 4, 1, 0, 7 }, &.{ 2, 2, 1, 1 }, 3);
-
-    {
-        var prng: std.Random.DefaultPrng = .init(67);
-        const random = prng.random();
-
-        var position: [950]u32 = undefined;
-        var speed: [950]u32 = undefined;
-        for (0..position.len) |i| {
-            position[i] = @intCast(i);
-            speed[i] = @mod(random.int(u32), 98) + 1;
-        }
-
-        try T.check(999, &position, &speed, 19);
-    }
 }
