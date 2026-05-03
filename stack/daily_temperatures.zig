@@ -36,28 +36,18 @@ const Solution = struct {
             temp: i32,
         };
 
-        //                        = 28,6
-        //                  stack = 40,5
-        //
-        //                                    i
-        //                  0  1  2  3  4  5  6
-        // temperatures = [30,38,30,36,35,40,28] -> [1,4,1,2,1,0,0]
         var result: []usize = try arena.alloc(usize, temperatures.len);
+        @memset(result, 0);
+
         var stack: std.ArrayList(TempIndex) = try .initCapacity(arena, temperatures.len);
         for (temperatures, 0..) |temp, i| {
-            if (stack.getLastOrNull()) |pair| {
-                while (stack.items.len > 0 and temp > pair.temp) {
-                    const index = stack.pop().?.index;
-                    result[index] = i - index;
-                }
-                try stack.append(arena, .{ .index = i, .temp = temp });
-            } else {
-                try stack.append(arena, .{ .index = i, .temp = temp });
-            }
-        }
+            while (stack.getLastOrNull()) |pair| {
+                if (temp <= pair.temp) break;
 
-        while (stack.pop()) |pair| {
-            result[pair.index] = 0;
+                const index = stack.pop().?.index;
+                result[index] = i - index;
+            } 
+            try stack.append(arena, .{ .index = i, .temp = temp });
         }
 
         return result;
