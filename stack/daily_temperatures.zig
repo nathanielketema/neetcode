@@ -23,26 +23,57 @@ const Io = std.Io;
 const Allocator = std.mem.Allocator;
 
 const Solution = struct {
-    fn daily_temperatures(arena: Allocator, temperatures: []const i32) ![]i32 {
+    fn daily_temperatures(arena: Allocator, temperatures: []const i32) ![]usize {
         assert(temperatures.len >= 1);
         assert(temperatures.len <= 1000);
         for (temperatures) |temperature| {
             assert(temperature >= 1);
             assert(temperature <= 100);
         }
+
+        const TempIndex = struct {
+            index: usize,
+            temp: i32,
+        };
+
+        //                        = 28,6
+        //                  stack = 40,5
+        //
+        //                                    i
+        //                  0  1  2  3  4  5  6
+        // temperatures = [30,38,30,36,35,40,28] -> [1,4,1,2,1,0,0]
+        var result: []usize = try arena.alloc(usize, temperatures.len);
+        var stack: std.ArrayList(TempIndex) = try .initCapacity(arena, temperatures.len);
+        for (temperatures, 0..) |temp, i| {
+            if (stack.getLastOrNull()) |pair| {
+                while (stack.items.len > 0 and temp > pair.temp) {
+                    const index = stack.pop().?.index;
+                    result[index] = i - index;
+                }
+                try stack.append(arena, .{ .index = i, .temp = temp });
+            } else {
+                try stack.append(arena, .{ .index = i, .temp = temp });
+            }
+        }
+
+        while (stack.pop()) |pair| {
+            result[pair.index] = 0;
+        }
+
+        return result;
     }
 };
 
 test "solution" {
     const T = struct {
-        fn check(temperatures: []const i32, want: []const i32) !void {
+        fn check(temperatures: []const i32, want: []const usize) !void {
             var arena_instance: std.heap.ArenaAllocator = .init(testing.allocator);
             defer arena_instance.deinit();
             const arena = arena_instance.allocator();
 
             const got = try Solution.daily_temperatures(arena, temperatures);
             std.debug.print("{any}: {any}\n", .{ temperatures, want });
-            try testing.expectEqualSlices(i32, want, got);
+            try testing.expectEqualSlices(usize, want, got);
         }
     };
 
