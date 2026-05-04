@@ -62,7 +62,7 @@ test "solution" {
             const arena = arena_instance.allocator();
 
             const got = try Solution.daily_temperatures(arena, temperatures);
-            std.debug.print("{any}: {any}\n", .{ temperatures, want });
+            std.debug.print("{any}: {any}\n", .{ temperatures, got });
             try testing.expectEqualSlices(usize, want, got);
         }
     };
