@@ -37,9 +37,3 @@ class Solution:
             else:
                 stack.append(int(token))
         return stack[0]
-
-
-solution = Solution()
-eval = solution.evalRPN(["1", "2", "3", "+", "3", "*", "4", "-"])
-print(eval)
-assert eval == 14
