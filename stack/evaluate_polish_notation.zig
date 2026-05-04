@@ -23,18 +23,69 @@ const Io = std.Io;
 const Allocator = std.mem.Allocator;
 
 const Solution = struct {
-    fn eval_RPN(tokens: [][]const u8) i32 {}
+    fn eval_RPN(arena: Allocator, tokens: []const []const u8) !i32 {
+        assert(tokens.len >= 1);
+        assert(tokens.len <= 1000);
+        for (tokens) |token| {
+            assert(std.mem.eql(u8, token, "+") or
+                std.mem.eql(u8, token, "-") or
+                std.mem.eql(u8, token, "*") or
+                std.mem.eql(u8, token, "/") or
+                try std.fmt.parseInt(i32, token, 10) >= -100 or
+                try std.fmt.parseInt(i32, token, 10) <= 100);
+        }
+
+        const Operands = enum {
+            @"+",
+            @"-",
+            @"*",
+            @"/",
+        };
+
+        var stack: std.ArrayList(i32) = try .initCapacity(arena, tokens.len);
+        for (tokens) |token| {
+            const operands: Operands = std.meta.stringToEnum(Operands, token) orelse {
+                try stack.append(arena, try std.fmt.parseInt(i32, token, 10));
+                continue;
+            };
+
+            switch (operands) {
+                .@"+" => {
+                    const rhs = stack.pop().?;
+                    const lhs = stack.pop().?;
+                    try stack.append(arena, lhs + rhs);
+                },
+                .@"-" => {
+                    const rhs = stack.pop().?;
+                    const lhs = stack.pop().?;
+                    try stack.append(arena, lhs - rhs);
+                },
+                .@"*" => {
+                    const rhs = stack.pop().?;
+                    const lhs = stack.pop().?;
+                    try stack.append(arena, lhs * rhs);
+                },
+                .@"/" => {
+                    const rhs = stack.pop().?;
+                    const lhs = stack.pop().?;
+                    try stack.append(arena, @divTrunc(lhs, rhs));
+                },
+            }
+        }
+
+        assert(stack.items.len == 1);
+        return stack.pop().?;
+    }
 };
 
 test "solution" {
     const T = struct {
-        fn check(tokens: [][]const u8, want: i32) !void {
-            //var arena_instance: std.heap.ArenaAllocator = .init(testing.allocator);
-            //defer arena_instance.deinit();
-            //const arena = arena_instance.allocator();
+        fn check(tokens: []const []const u8, want: i32) !void {
+            var arena_instance: std.heap.ArenaAllocator = .init(testing.allocator);
+            defer arena_instance.deinit();
+            const arena = arena_instance.allocator();
 
-            const got = Solution.eval_RPN(tokens);
-            std.debug.print("{any}: {any}\n", .{ tokens, got });
+            const got = try Solution.eval_RPN(arena, tokens);
             try testing.expectEqual(got, want);
         }
     };

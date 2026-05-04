@@ -1,5 +1,5 @@
 """
-You are given an array of strings tokens that represents a valid arithmetic expression 
+You are given an array of strings tokens that represents a valid arithmetic expression
 in Reverse Polish Notation.
 
 Return the integer that represents the evaluation of the expression.
@@ -19,6 +19,7 @@ Constraints:
     tokens[i] is "+", "-", "*", or "/", or a string representing an integer in the range [-100, 100].
 """
 
+
 class Solution:
     def evalRPN(self, tokens: list[str]) -> int:
         stack: list[int] = []
@@ -36,3 +37,9 @@ class Solution:
             else:
                 stack.append(int(token))
         return stack[0]
+
+
+solution = Solution()
+eval = solution.evalRPN(["1", "2", "3", "+", "3", "*", "4", "-"])
+print(eval)
+assert eval == 14

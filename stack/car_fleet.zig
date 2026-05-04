@@ -69,10 +69,10 @@ const Solution = struct {
             };
         }
         std.mem.sort(Car, cars, {}, struct {
-            fn greater_than(_: void, lhs: Car, rhs: Car) bool {
+            fn descending(_: void, lhs: Car, rhs: Car) bool {
                 return std.math.order(lhs.position, rhs.position) == .gt;
             }
-        }.greater_than);
+        }.descending);
 
         var stack: std.ArrayList(f64) = try .initCapacity(arena, position.len);
         for (cars) |car| {
