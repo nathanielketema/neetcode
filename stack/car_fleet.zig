@@ -80,10 +80,9 @@ const Solution = struct {
                 @as(f64, @floatFromInt(car.speed));
 
             if (stack.getLastOrNull()) |item| {
-                if (time > item) try stack.append(arena, time);
-            } else {
-                try stack.append(arena, time);
+                if (time <= item) continue;
             }
+            try stack.append(arena, time);
         }
 
         return stack.items.len;
