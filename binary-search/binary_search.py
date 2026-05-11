@@ -24,11 +24,11 @@ Constraints:
 class Solution:
     def search(self, nums: list[int], target: int) -> int:
         left, right = 0, len(nums) - 1
-        while left < right:
+        while left <= right:
             mid = (left + right) // 2
-            if mid == target:
+            if nums[mid] == target:
                 return mid
-            elif mid < target:
+            elif nums[mid] < target:
                 right = mid - 1
             else:
                 left = mid + 1
