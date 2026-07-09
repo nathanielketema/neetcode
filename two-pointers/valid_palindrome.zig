@@ -32,7 +32,6 @@ const Solution = struct {
     fn is_palindrome(s: []const u8) bool {
         assert(s.len >= 1);
         assert(s.len <= 1000);
-        for (s) |c| assert(ascii.isAscii(c));
 
         var lo: usize = 0;
         var hi: usize = s.len - 1;

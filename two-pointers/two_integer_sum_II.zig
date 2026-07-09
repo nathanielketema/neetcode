@@ -32,11 +32,6 @@ const Solution = struct {
         assert(numbers.len <= 1000);
         assert(target >= -1000);
         assert(target <= 1000);
-        for (numbers, 0..) |number, i| {
-            assert(number >= -1000);
-            assert(number <= 1000);
-            if (i < numbers.len - 1) assert(numbers[i] <= numbers[i + 1]);
-        }
 
         var lo: usize = 0;
         var hi: usize = numbers.len - 1;

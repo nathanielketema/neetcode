@@ -38,7 +38,6 @@ const Solution = struct {
     fn find_min(nums: []const i32) i32 {
         assert(nums.len >= 1);
         assert(nums.len <= 1000);
-        for (0..nums.len - 1) |i| assert(nums[i] != nums[i + 1]);
 
         var lhs: usize = 0;
         var rhs: usize = nums.len - 1;

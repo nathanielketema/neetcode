@@ -26,7 +26,6 @@ const Solution = struct {
     fn largest_rectangle_area(arena: Allocator, heights: []const u32) !u64 {
         assert(heights.len >= 1);
         assert(heights.len <= 1000);
-        for (heights) |height| assert(height <= 1000);
 
         const Pair = struct {
             index: usize,

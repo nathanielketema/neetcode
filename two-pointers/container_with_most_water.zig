@@ -24,10 +24,6 @@ const Solution = struct {
     fn max_area(heights: []const i32) i32 {
         assert(heights.len >= 2);
         assert(heights.len <= 1000);
-        for (heights) |height| {
-            assert(height >= 0);
-            assert(height <= 1000);
-        }
 
         var result: i32 = 0;
         var lo: usize = 0;

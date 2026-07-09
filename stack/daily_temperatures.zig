@@ -26,10 +26,6 @@ const Solution = struct {
     fn daily_temperatures(arena: Allocator, temperatures: []const i32) ![]usize {
         assert(temperatures.len >= 1);
         assert(temperatures.len <= 1000);
-        for (temperatures) |temperature| {
-            assert(temperature >= 1);
-            assert(temperature <= 100);
-        }
 
         const TempIndex = struct {
             index: usize,

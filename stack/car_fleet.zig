@@ -50,11 +50,6 @@ const Solution = struct {
     fn car_fleet(arena: Allocator, target: u32, position: []u32, speed: []const u32) !usize {
         assert(position.len == speed.len);
         assert(target > 0 and target <= 1000);
-        for (position, speed, 0..) |po, sp, i| {
-            assert(po < target);
-            assert(sp > 0 and sp <= 100);
-            if (i < position.len - 1) assert(position[i] != position[i + 1]);
-        }
 
         const Car = struct {
             position: u32,

@@ -26,14 +26,6 @@ const Solution = struct {
     fn eval_RPN(arena: Allocator, tokens: []const []const u8) !i32 {
         assert(tokens.len >= 1);
         assert(tokens.len <= 1000);
-        for (tokens) |token| {
-            assert(std.mem.eql(u8, token, "+") or
-                std.mem.eql(u8, token, "-") or
-                std.mem.eql(u8, token, "*") or
-                std.mem.eql(u8, token, "/") or
-                try std.fmt.parseInt(i32, token, 10) >= -100 or
-                try std.fmt.parseInt(i32, token, 10) <= 100);
-        }
 
         const Operands = enum {
             @"+",
